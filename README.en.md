@@ -25,7 +25,7 @@ A cross-platform menu-bar utility (macOS + Windows) using ByteDance OpenSpeech f
 
 ### macOS
 
-1. Grab the latest `VibeTalk_*.dmg` from [Releases](https://github.com/Windy3f3f3f3f/vibetalk/releases)
+1. Grab the latest `VibeTalk_*.dmg` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
 2. Open the dmg, drag VibeTalk to Applications
 3. Launch from Launchpad. On first run you'll need to grant:
    - **Microphone**: accept when prompted
@@ -34,7 +34,7 @@ A cross-platform menu-bar utility (macOS + Windows) using ByteDance OpenSpeech f
 
 ### Windows
 
-1. Grab the latest `VibeTalk_*.msi` from [Releases](https://github.com/Windy3f3f3f3f/vibetalk/releases)
+1. Grab the latest `VibeTalk_*.msi` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
 2. Run the installer, launch from the Start menu
 3. Grant microphone access on first recording
 
