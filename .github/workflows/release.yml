@@ -48,7 +48,7 @@ jobs:
         with:
           projectPath: app
           tagName: ${{ github.ref_name }}
-          releaseName: "VibeTalk ${{ github.ref_name }}"
+          releaseName: "VibeTalking ${{ github.ref_name }}"
           releaseBody: |
             See [CHANGELOG](./CHANGELOG.md) or commit log for details.
 

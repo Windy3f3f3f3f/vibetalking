@@ -188,7 +188,7 @@ fn build_popover_window(app: &AppHandle) -> tauri::Result<()> {
         return Ok(());
     }
     let _w = WebviewWindowBuilder::new(app, "popover", WebviewUrl::App("popover.html".into()))
-        .title("VibeTalk")
+        .title("VibeTalking")
         .inner_size(POPOVER_W, POPOVER_H)
         .decorations(false)
         .resizable(false)

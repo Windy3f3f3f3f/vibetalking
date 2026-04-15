@@ -1,4 +1,4 @@
-# VibeTalk
+# VibeTalking
 
 > 按住一个键说话,松开自动把语音转成文字粘到当前输入框。
 
@@ -6,7 +6,7 @@
 
 [English](./README.en.md)
 
-![VibeTalk](./assets/image.png)
+![VibeTalking](./assets/image.png)
 
 ## 特性
 
@@ -27,16 +27,16 @@
 
 ### macOS
 
-1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases) 下最新 `VibeTalk_*.dmg`
-2. 打开 dmg → 把 VibeTalk 拖到 Applications
+1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases) 下最新 `VibeTalking_*.dmg`
+2. 打开 dmg → 把 VibeTalking 拖到 Applications
 3. 从 Launchpad 启动。首次会弹三个授权:
    - **麦克风**:允许
-   - **辅助功能**:系统设置 → 隐私与安全 → 辅助功能 → 勾选 VibeTalk(用于监听 Fn 键 + 合成粘贴)
+   - **辅助功能**:系统设置 → 隐私与安全 → 辅助功能 → 勾选 VibeTalking(用于监听 Fn 键 + 合成粘贴)
 4. 因为没做公证,首次启动可能被 Gatekeeper 拦,右键 App 选"打开"绕过一次即可
 
 ### Windows
 
-1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases) 下最新 `VibeTalk_*.msi`
+1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases) 下最新 `VibeTalking_*.msi`
 2. 双击安装 → 从开始菜单启动
 3. 首次录音时授权麦克风即可
 
@@ -46,7 +46,7 @@
 
 1. 去 [字节火山引擎语音服务](https://console.volcengine.com/speech/service/10011) 开通"录音文件识别大模型"
 2. 记下 `App ID`、`Access Token`、`Resource ID`
-3. 在 VibeTalk 托盘右键 → 设置,把三个值填进去保存
+3. 在 VibeTalking 托盘右键 → 设置,把三个值填进去保存
 
 ## 使用
 

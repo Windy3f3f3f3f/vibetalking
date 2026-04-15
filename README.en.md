@@ -1,4 +1,4 @@
-# VibeTalk
+# VibeTalking
 
 > Hold a key to talk, release and your speech gets transcribed and pasted into whatever input you're focused on.
 
@@ -6,7 +6,7 @@ A cross-platform menu-bar utility (macOS + Windows) using ByteDance OpenSpeech f
 
 [中文](./README.md)
 
-![VibeTalk](./assets/image.png)
+![VibeTalking](./assets/image.png)
 
 ## Features
 
@@ -27,16 +27,16 @@ A cross-platform menu-bar utility (macOS + Windows) using ByteDance OpenSpeech f
 
 ### macOS
 
-1. Grab the latest `VibeTalk_*.dmg` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
-2. Open the dmg, drag VibeTalk to Applications
+1. Grab the latest `VibeTalking_*.dmg` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
+2. Open the dmg, drag VibeTalking to Applications
 3. Launch from Launchpad. On first run you'll need to grant:
    - **Microphone**: accept when prompted
-   - **Accessibility**: System Settings → Privacy & Security → Accessibility → enable VibeTalk (required to listen for the Fn key and synthesize Cmd+V)
+   - **Accessibility**: System Settings → Privacy & Security → Accessibility → enable VibeTalking (required to listen for the Fn key and synthesize Cmd+V)
 4. Not notarized — first launch may be blocked by Gatekeeper. Right-click the app and choose "Open" once to bypass.
 
 ### Windows
 
-1. Grab the latest `VibeTalk_*.msi` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
+1. Grab the latest `VibeTalking_*.msi` from [Releases](https://github.com/Windy3f3f3f3f/vibetalking/releases)
 2. Run the installer, launch from the Start menu
 3. Grant microphone access on first recording
 
@@ -46,7 +46,7 @@ You'll need your own ByteDance OpenSpeech credentials:
 
 1. Sign up at [Volcano Engine Speech Services](https://console.volcengine.com/speech/service/10011) and enable the large-model speech recognition service
 2. Note your `App ID`, `Access Token`, and `Resource ID`
-3. Right-click the VibeTalk tray icon → Settings, enter the three values and save
+3. Right-click the VibeTalking tray icon → Settings, enter the three values and save
 
 ## Usage
 
