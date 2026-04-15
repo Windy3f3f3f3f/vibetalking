@@ -25,7 +25,7 @@
 
 ### macOS
 
-1. 去 [Releases](https://github.com/Zeus233/vibetalk/releases) 下最新 `VibeTalk_*.dmg`
+1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalk/releases) 下最新 `VibeTalk_*.dmg`
 2. 打开 dmg → 把 VibeTalk 拖到 Applications
 3. 从 Launchpad 启动。首次会弹三个授权:
    - **麦克风**:允许
@@ -34,7 +34,7 @@
 
 ### Windows
 
-1. 去 [Releases](https://github.com/Zeus233/vibetalk/releases) 下最新 `VibeTalk_*.msi`
+1. 去 [Releases](https://github.com/Windy3f3f3f3f/vibetalk/releases) 下最新 `VibeTalk_*.msi`
 2. 双击安装 → 从开始菜单启动
 3. 首次录音时授权麦克风即可
 
