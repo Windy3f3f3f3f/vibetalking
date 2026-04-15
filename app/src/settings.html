@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Voice2Text 设置</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body class="settings">
+    <div class="settings-wrap">
+      <h1>Voice2Text</h1>
+
+      <section class="card">
+        <div class="row">
+          <label>平台</label>
+          <span id="platform" class="val">—</span>
+        </div>
+        <div class="row">
+          <label>快捷键</label>
+          <span id="hotkey" class="val">—</span>
+        </div>
+        <div class="row perm-row" id="perm-row">
+          <label>辅助功能权限</label>
+          <span id="perm" class="val">—</span>
+          <button class="btn-sm" id="grant">授权</button>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">API 凭证 (字节 OpenSpeech)</div>
+        <div class="row col">
+          <label>App ID</label>
+          <input type="text" id="app_id" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Access Token</label>
+          <input type="password" id="access_token" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Resource ID</label>
+          <input type="text" id="resource_id" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Language</label>
+          <input type="text" id="language" autocomplete="off" spellcheck="false" />
+        </div>
+      </section>
+
+      <div class="settings-footer">
+        <span id="save-status"></span>
+        <button class="btn-primary" id="save">保存</button>
+      </div>
+    </div>
+    <script type="module" src="./settings.ts"></script>
+  </body>
+</html>

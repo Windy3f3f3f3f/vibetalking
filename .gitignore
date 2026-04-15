@@ -1,0 +1,15 @@
+node_modules/
+dist/
+app/src-tauri/target/
+app/src-tauri/gen/
+app/dist/
+release/
+.DS_Store
+*.log
+.vscode/
+.idea/
+
+# Archived Swift build artifacts (source kept for reference)
+old/.build/
+old/.swiftpm/
+old/Voice2Text.app/
