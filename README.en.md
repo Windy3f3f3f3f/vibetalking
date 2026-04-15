@@ -6,6 +6,8 @@ A cross-platform menu-bar utility (macOS + Windows) using ByteDance OpenSpeech f
 
 [中文](./README.md)
 
+![VibeTalk](./assets/image.png)
+
 ## Features
 
 - **Push-to-talk**: hold the hotkey to record, release to transcribe and auto-paste into any text field

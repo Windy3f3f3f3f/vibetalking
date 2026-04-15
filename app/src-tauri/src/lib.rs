@@ -15,7 +15,7 @@ use std::sync::Arc;
 use tauri::image::Image;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
-use tauri::{AppHandle, Emitter, LogicalPosition, LogicalSize, Manager, WebviewUrl, WebviewWindowBuilder};
+use tauri::{AppHandle, Emitter, LogicalSize, Manager, PhysicalPosition, WebviewUrl, WebviewWindowBuilder};
 use tokio::sync::mpsc;
 
 struct AppState {
@@ -143,6 +143,7 @@ pub fn run() {
                     _ => {}
                 })
                 .on_tray_icon_event(|tray, event| {
+                    log::info!("tray event: {:?}", event);
                     if let TrayIconEvent::Click {
                         button: MouseButton::Left,
                         button_state: MouseButtonState::Up,
@@ -151,9 +152,14 @@ pub fn run() {
                     } = event
                     {
                         let app = tray.app_handle().clone();
-                        let pos = rect.position.to_logical::<f64>(1.0);
-                        let sz = rect.size.to_logical::<f64>(1.0);
-                        toggle_popover(&app, pos.x, pos.y, sz.width);
+                        let scale = tray
+                            .app_handle()
+                            .get_webview_window("popover")
+                            .and_then(|w| w.scale_factor().ok())
+                            .unwrap_or(1.0);
+                        let pos = rect.position.to_physical::<f64>(scale);
+                        let sz = rect.size.to_physical::<f64>(scale);
+                        toggle_popover(&app, pos.x, pos.y, sz.width, scale);
                     }
                 })
                 .build(app)?;
@@ -181,8 +187,8 @@ fn build_popover_window(app: &AppHandle) -> tauri::Result<()> {
     if app.get_webview_window("popover").is_some() {
         return Ok(());
     }
-    let w = WebviewWindowBuilder::new(app, "popover", WebviewUrl::App("popover.html".into()))
-        .title("Voice2Text")
+    let _w = WebviewWindowBuilder::new(app, "popover", WebviewUrl::App("popover.html".into()))
+        .title("VibeTalk")
         .inner_size(POPOVER_W, POPOVER_H)
         .decorations(false)
         .resizable(false)
@@ -190,29 +196,29 @@ fn build_popover_window(app: &AppHandle) -> tauri::Result<()> {
         .skip_taskbar(true)
         .visible(false)
         .shadow(true)
-        .transparent(true)
         .build()?;
-    // Hide when user clicks outside
-    let wh = w.clone();
-    w.on_window_event(move |event| {
-        if let tauri::WindowEvent::Focused(false) = event {
-            let _ = wh.hide();
-        }
-    });
     Ok(())
 }
 
-fn toggle_popover(app: &AppHandle, tray_x: f64, tray_y: f64, tray_w: f64) {
-    let Some(w) = app.get_webview_window("popover") else { return };
+fn toggle_popover(app: &AppHandle, tray_px: f64, tray_py: f64, tray_pw: f64, scale: f64) {
+    let Some(w) = app.get_webview_window("popover") else {
+        log::warn!("popover window missing");
+        return;
+    };
     let visible = w.is_visible().unwrap_or(false);
+    log::info!(
+        "toggle_popover: visible={} tray_physical=({},{},w={}) scale={}",
+        visible, tray_px, tray_py, tray_pw, scale
+    );
     if visible {
         let _ = w.hide();
         return;
     }
-    let lx = tray_x + tray_w / 2.0 - POPOVER_W / 2.0;
-    let ly = tray_y + 24.0;
-    let _ = w.set_position(LogicalPosition::new(lx, ly));
+    let pop_pw = POPOVER_W * scale;
+    let px = tray_px + tray_pw / 2.0 - pop_pw / 2.0;
+    let py = tray_py + tray_pw.max(60.0); // below the tray icon in physical px
     let _ = w.set_size(LogicalSize::new(POPOVER_W, POPOVER_H));
+    let _ = w.set_position(PhysicalPosition::new(px, py));
     let _ = w.show();
     let _ = w.set_focus();
     let _ = app.emit("popover-opened", ());

@@ -42,16 +42,14 @@ button { font-family: inherit; font-size: inherit; }
 
 /* ------ Popover (tray dropdown) ------ */
 body.popover {
-  background: transparent;
+  background: var(--card-bg);
   overflow: hidden;
 }
 .pop-wrap {
   width: 100vw;
   height: 100vh;
-  background: var(--popover-bg);
-  backdrop-filter: saturate(180%) blur(30px);
-  -webkit-backdrop-filter: saturate(180%) blur(30px);
-  border-radius: 12px;
+  background: var(--card-bg);
+  border-radius: 10px;
   border: 1px solid var(--card-border);
   display: flex;
   flex-direction: column;

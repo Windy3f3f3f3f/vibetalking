@@ -6,6 +6,8 @@
 
 [English](./README.en.md)
 
+![VibeTalk](./assets/image.png)
+
 ## 特性
 
 - **Push-to-talk**:按住快捷键录音,松开转写并自动粘贴到任何输入框
