@@ -84,6 +84,11 @@ body.popover {
   box-shadow: 0 0 0 2px rgba(255, 149, 0, 0.25);
   animation: pulse 1.2s ease-in-out infinite;
 }
+.dot.busy {
+  background: var(--accent);
+  box-shadow: 0 0 0 2px rgba(10, 132, 255, 0.22);
+  animation: pulse 1.2s ease-in-out infinite;
+}
 @keyframes pulse {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.5; }
@@ -110,11 +115,22 @@ body.popover {
 .hist-item.err .hist-text { color: var(--danger); }
 .hist-row1 {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
   font-size: 11px;
   color: var(--fg-muted);
   margin-bottom: 2px;
 }
+.hist-row1 .hist-time { flex: 1; }
+.hist-badge {
+  font-size: 10px;
+  padding: 0 5px;
+  border-radius: 4px;
+  line-height: 14px;
+  font-weight: 600;
+}
+.hist-badge.ok { background: rgba(10, 132, 255, 0.16); color: var(--accent); }
+.hist-badge.warn { background: rgba(255, 159, 10, 0.18); color: #ff9f0a; }
 .hist-text {
   font-size: 12.5px;
   line-height: 1.4;
@@ -215,7 +231,9 @@ body.settings { background: var(--bg); }
 .row.col { flex-direction: column; align-items: stretch; gap: 4px; }
 .row.col label { font-size: 11px; color: var(--fg-muted); }
 .row input[type="text"],
-.row input[type="password"] {
+.row input[type="password"],
+.row select,
+.row textarea {
   background: var(--input-bg);
   border: 1px solid var(--input-border);
   border-radius: 6px;
@@ -225,8 +243,36 @@ body.settings { background: var(--bg); }
   font-family: ui-monospace, "SF Mono", Menlo, monospace;
   outline: none;
 }
-.row input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25); }
+.row select {
+  font-family: inherit;
+}
+.row textarea {
+  min-height: 88px;
+  resize: vertical;
+  line-height: 1.45;
+}
+.row input:focus,
+.row select:focus,
+.row textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.25); }
 .perm-row { flex-wrap: wrap; }
+.row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+.refine-reset {
+  align-self: flex-end;
+  margin-top: 4px;
+  background: transparent;
+  color: var(--fg-muted);
+  border: 1px solid var(--input-border);
+}
+.refine-reset:hover {
+  color: var(--fg);
+  border-color: var(--fg-muted);
+}
 .btn-sm {
   padding: 3px 10px;
   font-size: 11px;

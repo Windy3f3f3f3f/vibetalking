@@ -27,7 +27,69 @@
       </section>
 
       <section class="card">
-        <div class="card-title">API 凭证 (字节 OpenSpeech)</div>
+        <div class="card-title">转写后端</div>
+        <div class="row col">
+          <label>模型</label>
+          <select id="transcribe_provider">
+            <option value="qwen35_omni_flash">Qwen3.5 Omni Flash</option>
+            <option value="qwen35_omni_plus">Qwen3.5 Omni Plus</option>
+            <option value="qwen3_asr_flash">Qwen3 ASR Flash</option>
+            <option value="volc_openspeech">字节 OpenSpeech</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="card provider-card" id="qwen-card">
+        <div class="card-title">DashScope / Qwen</div>
+        <div class="row col">
+          <label>API Key</label>
+          <input type="password" id="dashscope_api_key" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Base URL</label>
+          <input type="text" id="dashscope_base_url" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col qwen-asr-row">
+          <label>Qwen ASR Model</label>
+          <input type="text" id="qwen_asr_model" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col qwen-asr-row">
+          <label>Qwen ASR Language</label>
+          <input type="text" id="qwen_asr_language" autocomplete="off" spellcheck="false" placeholder="留空=自动/中英混说" />
+        </div>
+        <div class="row col omni-row">
+          <label>Omni Prompt</label>
+          <textarea id="omni_prompt" autocomplete="off" spellcheck="false" rows="5"></textarea>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="card-title">Refine（LLM 后处理）</div>
+        <div class="row">
+          <label for="refine_enabled">启用 refine（转写后再过一遍 LLM）</label>
+          <input type="checkbox" id="refine_enabled" />
+        </div>
+        <div class="row col">
+          <label>API Key（AIHUBMIX）</label>
+          <input type="password" id="refine_api_key" autocomplete="off" spellcheck="false" placeholder="留空则读 AIHUBMIX_API_KEY 环境变量" />
+        </div>
+        <div class="row col">
+          <label>Base URL</label>
+          <input type="text" id="refine_base_url" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Model</label>
+          <input type="text" id="refine_model" autocomplete="off" spellcheck="false" />
+        </div>
+        <div class="row col">
+          <label>Refine Prompt</label>
+          <textarea id="refine_prompt" autocomplete="off" spellcheck="false" rows="14"></textarea>
+          <button type="button" class="btn-sm refine-reset" id="refine_reset">恢复默认 prompt</button>
+        </div>
+      </section>
+
+      <section class="card provider-card" id="volc-card">
+        <div class="card-title">字节 OpenSpeech</div>
         <div class="row col">
           <label>App ID</label>
           <input type="text" id="app_id" autocomplete="off" spellcheck="false" />

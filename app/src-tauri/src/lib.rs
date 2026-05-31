@@ -3,6 +3,7 @@ mod history;
 mod hotkey;
 mod inject;
 mod recorder;
+mod refine;
 mod settings;
 mod transcribe;
 
@@ -68,6 +69,11 @@ fn get_meta(state: tauri::State<'_, AppState>) -> serde_json::Value {
         "platform": std::env::consts::OS,
         "accessibility_ok": hotkey::check_accessibility_trusted(false),
         "settings": s,
+        "defaults": {
+            "refine_prompt": config::REFINE_PROMPT,
+            "refine_model": config::REFINE_MODEL,
+            "refine_base_url": config::REFINE_BASE_URL,
+        },
     })
 }
 
@@ -235,14 +241,24 @@ fn spawn_event_loop(
         while let Some(ev) = rx.blocking_recv() {
             match ev {
                 HotkeyEvent::Pressed => {
-                    if let Err(e) = recorder.start() {
-                        log::error!("start recording failed: {}", e);
-                        continue;
-                    }
+                    log::info!("hotkey pressed");
                     set_tray_state(&app, true);
                     let _ = app.emit("recording-state", true);
+                    if let Err(e) = recorder.start() {
+                        log::error!("start recording failed: {}", e);
+                        set_tray_state(&app, false);
+                        let _ = app.emit("recording-state", false);
+                        add_error_history(
+                            &history,
+                            &app,
+                            0,
+                            format!("start recording failed: {}", e),
+                        );
+                        continue;
+                    }
                 }
                 HotkeyEvent::Released => {
+                    log::info!("hotkey released");
                     if !recorder.is_running() {
                         continue;
                     }
@@ -252,6 +268,12 @@ fn spawn_event_loop(
                         Ok(v) => v,
                         Err(e) => {
                             log::error!("stop: {}", e);
+                            add_error_history(
+                                &history,
+                                &app,
+                                0,
+                                format!("stop recording failed: {}", e),
+                            );
                             continue;
                         }
                     };
@@ -263,18 +285,40 @@ fn spawn_event_loop(
                     let app_h = app.clone();
                     let snap = settings.get();
                     tauri::async_runtime::spawn(async move {
-                        match transcribe::transcribe(&wav, snap).await {
-                            Ok(text) => {
-                                log::info!("transcribed {} chars", text.chars().count());
-                                if let Err(e) = inject::paste_text(&text) {
+                        let _ = app_h.emit("processing-state", true);
+                        match transcribe::transcribe(&wav, snap.clone()).await {
+                            Ok(raw) => {
+                                log::info!("transcribed {} chars", raw.chars().count());
+                                let (final_text, raw_text, refine_error) =
+                                    if snap.refine_enabled && refine::has_credential(&snap) {
+                                        match refine::refine(&raw, &snap).await {
+                                            Ok(refined) => {
+                                                log::info!(
+                                                    "refined {} → {} chars",
+                                                    raw.chars().count(),
+                                                    refined.chars().count()
+                                                );
+                                                (refined, Some(raw), None)
+                                            }
+                                            Err(e) => {
+                                                log::error!("refine failed, falling back to raw: {}", e);
+                                                (raw, None, Some(e.to_string()))
+                                            }
+                                        }
+                                    } else {
+                                        (raw, None, None)
+                                    };
+                                if let Err(e) = inject::paste_text(&final_text) {
                                     log::error!("paste failed: {}", e);
                                 }
                                 let _ = hist.add(HistoryItem {
                                     id: uuid::Uuid::new_v4().to_string(),
                                     timestamp: Utc::now(),
-                                    text,
+                                    text: final_text,
                                     duration_ms,
                                     error: None,
+                                    raw_text,
+                                    refine_error,
                                 });
                                 let _ = app_h.emit("history-updated", ());
                             }
@@ -286,15 +330,31 @@ fn spawn_event_loop(
                                     text: String::new(),
                                     duration_ms,
                                     error: Some(e.to_string()),
+                                    raw_text: None,
+                                    refine_error: None,
                                 });
                                 let _ = app_h.emit("history-updated", ());
                             }
                         }
+                        let _ = app_h.emit("processing-state", false);
                     });
                 }
             }
         }
     });
+}
+
+fn add_error_history(history: &HistoryStore, app: &AppHandle, duration_ms: u64, error: String) {
+    let _ = history.add(HistoryItem {
+        id: uuid::Uuid::new_v4().to_string(),
+        timestamp: Utc::now(),
+        text: String::new(),
+        duration_ms,
+        error: Some(error),
+        raw_text: None,
+        refine_error: None,
+    });
+    let _ = app.emit("history-updated", ());
 }
 
 #[cfg(target_os = "macos")]

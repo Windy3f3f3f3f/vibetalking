@@ -12,8 +12,8 @@ pub fn spawn_listener(tx: UnboundedSender<HotkeyEvent>) {
 fn run_tap(tx: UnboundedSender<HotkeyEvent>) -> anyhow::Result<()> {
     use core_foundation::runloop::{kCFRunLoopCommonModes, CFRunLoop};
     use core_graphics::event::{
-        CGEventFlags, CGEventTap, CGEventTapLocation, CGEventTapOptions, CGEventTapPlacement,
-        CGEventType, CallbackResult,
+        CallbackResult, CGEventFlags, CGEventTap, CGEventTapLocation, CGEventTapOptions,
+        CGEventTapPlacement, CGEventType, EventField, KeyCode,
     };
     use std::sync::atomic::{AtomicBool, Ordering};
     use std::sync::Arc;
@@ -25,16 +25,36 @@ fn run_tap(tx: UnboundedSender<HotkeyEvent>) -> anyhow::Result<()> {
     let tap = CGEventTap::new(
         CGEventTapLocation::HID,
         CGEventTapPlacement::HeadInsertEventTap,
-        CGEventTapOptions::ListenOnly,
-        vec![CGEventType::FlagsChanged],
-        move |_proxy, _etype, event| {
+        CGEventTapOptions::Default,
+        vec![
+            CGEventType::FlagsChanged,
+            CGEventType::KeyDown,
+            CGEventType::KeyUp,
+        ],
+        move |_proxy, etype, event| {
             let flags = event.get_flags();
-            let fn_pressed = flags.contains(CGEventFlags::CGEventFlagSecondaryFn);
+            let keycode = event.get_integer_value_field(EventField::KEYBOARD_EVENT_KEYCODE);
+            // 注意：macOS 的方向键 / PageUp / PageDown / Home / End 等键
+            // 自身就带有 CGEventFlagSecondaryFn flag（Apple 历史设计，与是否按 Fn 无关）。
+            // 因此 KeyDown/KeyUp 的 flag 不能用来反推 Fn 状态，否则按一下 ↑ 就会
+            // 误判为 Fn 按下，松开 ↑ 时 flag 还在又判不出释放，导致录音一直进行。
+            // 只有 FlagsChanged 事件才真实反映 Fn 自身的按下/释放。
+            let fn_pressed = match etype {
+                CGEventType::KeyDown if keycode == KeyCode::FUNCTION as i64 => true,
+                CGEventType::KeyUp if keycode == KeyCode::FUNCTION as i64 => false,
+                CGEventType::FlagsChanged => {
+                    flags.contains(CGEventFlags::CGEventFlagSecondaryFn)
+                }
+                _ => prev_cb.load(Ordering::SeqCst),
+            };
             let was = prev_cb.swap(fn_pressed, Ordering::SeqCst);
             if fn_pressed && !was {
                 let _ = tx_cb.send(HotkeyEvent::Pressed);
             } else if !fn_pressed && was {
                 let _ = tx_cb.send(HotkeyEvent::Released);
+            }
+            if keycode == KeyCode::FUNCTION as i64 || fn_pressed || was {
+                return CallbackResult::Drop;
             }
             CallbackResult::Keep
         },

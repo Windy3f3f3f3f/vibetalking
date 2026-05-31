@@ -6,7 +6,8 @@ import time
 
 APP_ID = "7236214542"
 ACCESS_TOKEN = "MMTCwjoy_KAOIaYTY64ZpwPyEP0gV0N5"
-AUDIO_FILE = "/Users/wendy/pro/voice2text/meeting2.m4a"
+AUDIO_FILE = "/Users/wendy/pro/voice2text/youtube_video.m4a"
+OUTPUT_FILE = "/Users/wendy/pro/voice2text/youtube_video.txt"
 
 SUBMIT_URL = "https://openspeech.bytedance.com/api/v3/auc/bigmodel/submit"
 QUERY_URL = "https://openspeech.bytedance.com/api/v3/auc/bigmodel/query"
@@ -45,7 +46,7 @@ payload = {
 }
 
 print(f"提交任务中... (request_id: {request_id})")
-response = requests.post(SUBMIT_URL, json=payload, headers=headers, timeout=120)
+response = requests.post(SUBMIT_URL, json=payload, headers=headers, timeout=600)
 status_code = response.headers.get("X-Api-Status-Code", "")
 message = response.headers.get("X-Api-Message", "")
 print(f"提交结果: code={status_code}, message={message}")
@@ -65,7 +66,7 @@ query_headers = {
     "X-Api-Sequence": "-1",
 }
 
-for i in range(360):  # 最多等30分钟
+for i in range(720):  # 最多等60分钟
     time.sleep(5)
     try:
         resp = requests.post(QUERY_URL, json={}, headers=query_headers, timeout=30)
@@ -80,7 +81,6 @@ for i in range(360):  # 最多等30分钟
     except:
         data = {}
 
-    # 检查 header 和 body 两种方式的状态码
     body_code = data.get("header", {}).get("code")
     code = body_code if body_code else int(h_code) if h_code.isdigit() else None
 
@@ -88,8 +88,7 @@ for i in range(360):  # 最多等30分钟
         text = data.get("result", {}).get("text", "")
         utterances = data.get("result", {}).get("utterances", [])
 
-        output_file = "/Users/wendy/pro/voice2text/meeting2.txt"
-        with open(output_file, "w", encoding="utf-8") as f:
+        with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
             f.write(text)
             if utterances:
                 f.write("\n\n--- 分句详情 ---\n")
@@ -100,15 +99,8 @@ for i in range(360):  # 最多等30分钟
                     speaker_tag = f"[说话人{speaker}] " if speaker else ""
                     f.write(f"{speaker_tag}[{start:.1f}s - {end:.1f}s] {u.get('text', '')}\n")
 
-        # 保存原始响应用于调试
-        with open("/Users/wendy/Desktop/transcribe_raw.json", "w", encoding="utf-8") as rf:
-            json.dump(data, rf, ensure_ascii=False, indent=2)
-
-        print(f"\n识别成功！文本已保存到: {output_file}")
+        print(f"\n识别成功！文本已保存到: {OUTPUT_FILE}")
         print(f"文本长度: {len(text)} 字")
-        if utterances:
-            print(f"\n第一条utterance的所有字段: {list(utterances[0].keys())}")
-            print(f"示例: {json.dumps(utterances[0], ensure_ascii=False)}")
         print(f"\n前500字预览:\n{text[:500]}")
         break
     elif code in (20000001, 20000002):
@@ -116,13 +108,11 @@ for i in range(360):  # 最多等30分钟
         elapsed = (i + 1) * 5
         print(f"  [{elapsed}s] {status}...")
     else:
-        # 如果 body 为空但 header 显示处理中
         if h_code in ("20000001", "20000002"):
             status = "处理中" if h_code == "20000001" else "排队中"
             elapsed = (i + 1) * 5
             print(f"  [{elapsed}s] {status}...")
         elif h_code == "20000000" and not data.get("result"):
-            # 可能结果在 body 中但为空，继续等待
             elapsed = (i + 1) * 5
             print(f"  [{elapsed}s] 等待结果...")
         else:

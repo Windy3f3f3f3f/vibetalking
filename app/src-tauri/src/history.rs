@@ -14,6 +14,10 @@ pub struct HistoryItem {
     pub duration_ms: u64,
     #[serde(default)]
     pub error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub raw_text: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub refine_error: Option<String>,
 }
 
 pub struct HistoryStore {
