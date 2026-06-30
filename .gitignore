@@ -13,3 +13,6 @@ release/
 old/.build/
 old/.swiftpm/
 old/Voice2Text.app/
+
+# AI-OS agent local state (not part of the app)
+.claude/
