@@ -1,5 +1,7 @@
 # VibeTalking
 
+26.9.13更新：建议直接改用豆包输入法 https://shurufa.doubao.com/
+
 > 按住一个键说话,松开自动把语音转成文字粘到当前输入框。
 
 跨平台菜单栏小工具 (macOS + Windows)。默认用 **Qwen3.5 Omni**(阿里云百炼 / DashScope)做语音转写,再可选地过一遍 **LLM 润色**(任意 OpenAI 兼容接口)修正同音字、术语拼写和标点。
